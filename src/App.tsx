@@ -124,14 +124,14 @@ export default function App() {
       <div className="mx-auto flex max-w-3xl flex-col pt-8 pb-12 sm:pt-12">
         <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
           {/* Navy header */}
-          <div className="bg-[#0f2744] px-5 py-5 sm:px-7">
+          <div className="bg-[#0f2744] px-5 pt-4 pb-5 sm:px-7">
             <h1 className="text-xl font-bold text-white sm:text-[1.4rem]">RF Power Calculator</h1>
             <p className="mt-0.5 text-[13px] text-slate-300">
               Convert RF power between Watts (W), milliwatts (mW), dBm, and dBW.
             </p>
 
             {/* Tabs */}
-            <nav className="-mb-6 -ml-2 -mr-5 mt-4 flex flex-wrap gap-1 sm:-mr-7 sm:-ml-3">
+            <nav className="-mb-6 -ml-2 -mr-5 mt-7 flex flex-wrap gap-1 sm:-mr-7 sm:-ml-3">
               <button
                 type="button"
                 onClick={() => setActiveTab("calculator")}
