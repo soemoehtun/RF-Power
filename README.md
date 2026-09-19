@@ -2,8 +2,6 @@
 
 An interactive, client-side **RF Power Calculator & Unit Converter** designed for RF engineers, telecommunications professionals, and amateur radio operators. Convert RF power values between **Watts (W)**, **Milliwatts (mW)**, **dBm**, and **dBW** with real-time updates and zero server dependencies.
 
-Inspired by the clean, utility-first layout of telecom engineering tools like [Cell-ID-Calculator](https://github.com/soemoehtun/Cell-ID-Calculator).
-
 ---
 
 ## Features
