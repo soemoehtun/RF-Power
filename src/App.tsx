@@ -116,29 +116,28 @@ export default function App() {
     { label: "dBW:", value: result ? `${formatNumber(result.dbw, "dBW")} dBW` : "\u2013" },
   ];
 
-  const labelCell = "w-1/2 border-t border-slate-200 bg-slate-50 px-4 py-2.5 text-left text-sm font-medium text-slate-700 sm:w-2/3";
-  const valueCell = "border-t border-slate-200 px-4 py-2.5 text-right font-mono text-sm text-slate-900";
-
   return (
     <div className="min-h-screen bg-white font-sans antialiased sm:bg-[#eceff2]">
       <div className="flex min-h-screen w-full flex-col sm:mx-auto sm:min-h-0 sm:max-w-2xl sm:py-10">
         <div className="flex min-h-screen w-full flex-col overflow-hidden bg-white sm:min-h-0 sm:rounded-xl sm:border sm:border-slate-200 sm:shadow-sm">
-          {/* Navy header */}
-          <div className="bg-[#0f2744] px-4 pt-4 sm:px-7 sm:pt-6">
-            <h1 className="text-xl font-bold text-white sm:text-[1.4rem]">RF Power Calculator</h1>
-            <p className="mt-0.5 text-[13px] text-slate-300">
-              Convert power between Watts (W), milliwatts (mW), dBm, and dBW.
-            </p>
+          {/* Navy header — extends under the phone status bar / notch via the safe-area inset */}
+          <div className="bg-[#0f2744] pt-[max(1rem,env(safe-area-inset-top))] sm:pt-6">
+            <div className="px-4 sm:px-7">
+              <h1 className="text-xl font-bold text-white sm:text-[1.4rem]">RF Power Calculator</h1>
+              <p className="mt-0.5 text-[13px] text-slate-300">
+                Convert power between Watts (W), milliwatts (mW), dBm, and dBW.
+              </p>
+            </div>
 
-            {/* Tabs — sit directly on the header's bottom edge so the active tab merges seamlessly with the body */}
-            <nav className="mt-5 -mb-px flex gap-1">
+            {/* Tabs — full-width navy bar with white underline on the active tab */}
+            <nav className="mt-5 flex border-b border-white/10">
               <button
                 type="button"
                 onClick={() => setActiveTab("calculator")}
                 className={
                   activeTab === "calculator"
-                    ? "rounded-t bg-white px-3 py-1.5 text-sm font-medium text-slate-900"
-                    : "px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:text-white"
+                    ? "border-b-2 border-white px-5 py-2.5 text-sm font-semibold text-white"
+                    : "border-b-2 border-transparent px-5 py-2.5 text-sm font-medium text-slate-300 transition hover:text-white"
                 }
               >
                 Calculator
@@ -148,8 +147,8 @@ export default function App() {
                 onClick={() => setActiveTab("formulas")}
                 className={
                   activeTab === "formulas"
-                    ? "rounded-t bg-white px-3 py-1.5 text-sm font-medium text-slate-900"
-                    : "px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:text-white"
+                    ? "border-b-2 border-white px-5 py-2.5 text-sm font-semibold text-white"
+                    : "border-b-2 border-transparent px-5 py-2.5 text-sm font-medium text-slate-300 transition hover:text-white"
                 }
               >
                 Formulas &amp; Theory
@@ -158,152 +157,140 @@ export default function App() {
           </div>
 
           {/* Body */}
-          <div className="px-4 py-5 sm:px-7 sm:py-7">
+          <div className="px-4 py-6 sm:px-7 sm:py-7">
             {activeTab === "calculator" && (
               <>
-                {/* Input block */}
-                <div className="rounded-md border border-slate-200">
-                  <div className="border-b border-slate-200 px-4 py-3 sm:px-5">
-                    <h2 className="text-sm font-bold uppercase tracking-wide text-slate-800">Input</h2>
+                <h2 className="text-[17px] font-bold text-slate-900">Calculator</h2>
+                <p className="mt-0.5 text-[13px] text-slate-500">Enter a power value and its unit to see all conversions</p>
+
+                <div className="mt-5 grid grid-cols-1 gap-x-5 gap-y-4 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor={unitId} className="mb-1.5 block text-[13px] font-medium text-slate-700">
+                      Input Unit: <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      id={unitId}
+                      value={unit}
+                      onChange={(e) => setUnit(e.target.value as PowerUnit)}
+                      className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-[#2c6bb3] focus:ring-2 focus:ring-[#2c6bb3]/20"
+                    >
+                      {units.map((o) => (
+                        <option key={o.value} value={o.value}>
+                          {o.label}
+                        </option>
+                      ))}
+                    </select>
                   </div>
-                  <div className="p-4 sm:p-5">
-                    <div className="space-y-4">
-                      <div>
-                        <label htmlFor={unitId} className="mb-1.5 block text-sm font-medium text-slate-700">
-                          Input Unit:
-                        </label>
-                        <select
-                          id={unitId}
-                          value={unit}
-                          onChange={(e) => setUnit(e.target.value as PowerUnit)}
-                          className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-[#2c6bb3] focus:ring-2 focus:ring-[#2c6bb3]/20"
-                        >
-                          {units.map((o) => (
-                            <option key={o.value} value={o.value}>
-                              {o.label}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
 
-                      <div>
-                        <label htmlFor={inputId} className="mb-1.5 block text-sm font-medium text-slate-700">
-                          Power Value:
-                        </label>
-                        <input
-                          id={inputId}
-                          type="number"
-                          step="any"
-                          value={inputValue}
-                          onChange={(e) => setInputValue(e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") calculate(inputValue, unit);
-                          }}
-                          placeholder={unit === "dBm" ? "e.g. 37 or -30" : "Enter a value"}
-                          className={`w-full rounded-md border px-3 py-2 font-mono text-sm text-slate-900 outline-none transition ${
-                            error
-                              ? "border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-200"
-                              : "border-slate-300 focus:border-[#2c6bb3] focus:ring-2 focus:ring-[#2c6bb3]/20"
-                          }`}
-                        />
-                      </div>
+                  <div>
+                    <label htmlFor={inputId} className="mb-1.5 block text-[13px] font-medium text-slate-700">
+                      Power Value: <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      id={inputId}
+                      type="number"
+                      step="any"
+                      value={inputValue}
+                      onChange={(e) => setInputValue(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") calculate(inputValue, unit);
+                      }}
+                      placeholder={unit === "dBm" ? "e.g. 37 or -30" : "Enter a value"}
+                      className={`w-full rounded-md border px-3 py-2 font-mono text-sm text-slate-900 outline-none transition ${
+                        error
+                          ? "border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-200"
+                          : "border-slate-300 focus:border-[#2c6bb3] focus:ring-2 focus:ring-[#2c6bb3]/20"
+                      }`}
+                    />
+                  </div>
 
-                      <p className="text-[12px] leading-5 text-slate-500">
-                        {unit === "dBm" && "Negative values are allowed (e.g. -30 dBm = 1 µW)."}
-                        {unit === "dBW" && "Negative values are allowed (e.g. -30 dBW = 1 mW)."}
-                        {unit === "W" && "Watts must be greater than 0."}
-                        {unit === "mW" && "Milliwatts must be greater than 0."}
-                      </p>
+                  <p className="text-[12px] leading-5 text-slate-500 sm:col-span-2">
+                    {unit === "dBm" && "Negative values are allowed (e.g. -30 dBm = 1 µW)."}
+                    {unit === "dBW" && "Negative values are allowed (e.g. -30 dBW = 1 mW)."}
+                    {unit === "W" && "Watts must be greater than 0."}
+                    {unit === "mW" && "Milliwatts must be greater than 0."}
+                  </p>
 
-                      {error && (
-                        <div role="alert" className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[13px] text-red-700">
-                          {error}
-                        </div>
-                      )}
-
-                      <div className="flex items-center justify-end gap-2 border-t border-slate-100 pt-4">
-                        <button
-                          type="button"
-                          onClick={handleClear}
-                          className="rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50"
-                        >
-                          Clear
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => calculate(inputValue, unit)}
-                          className="rounded-md border border-[#255a9a] bg-[#2c6bb3] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#225692] focus:outline-none focus:ring-2 focus:ring-[#2c6bb3]/30"
-                        >
-                          Calculate
-                        </button>
-                      </div>
+                  {error && (
+                    <div role="alert" className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[13px] text-red-700 sm:col-span-2">
+                      {error}
                     </div>
-                  </div>
+                  )}
                 </div>
 
-                {/* Output block */}
-                <div className="mt-6 overflow-hidden rounded-md border border-slate-200">
-                  <div className="border-b border-slate-200 px-4 py-3 sm:px-5">
-                    <h2 className="text-sm font-bold uppercase tracking-wide text-slate-800">Output</h2>
-                  </div>
-                  <div>
-                    <table className="w-full border-collapse text-sm">
-                      <tbody>
-                        {outputRows.map((row) => (
-                          <tr key={row.label}>
-                            <td className={labelCell}>{row.label}</td>
-                            <td className={valueCell}>{row.value}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                <div className="mt-5 flex items-center justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={handleClear}
+                    className="rounded-md border border-slate-300 bg-white px-5 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50"
+                  >
+                    Clear
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => calculate(inputValue, unit)}
+                    className="rounded-md border border-[#255a9a] bg-[#2c6bb3] px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#225692] focus:outline-none focus:ring-2 focus:ring-[#2c6bb3]/30"
+                  >
+                    Calculate
+                  </button>
+                </div>
+
+                <hr className="my-6 border-slate-200" />
+
+                <h2 className="text-xs font-bold uppercase tracking-wide text-slate-500">Result</h2>
+                <div className="mt-3 rounded-lg border border-slate-200 bg-slate-100 px-4 py-1">
+                  {result ? (
+                    <dl className="divide-y divide-slate-200">
+                      {outputRows.map((row) => (
+                        <div key={row.label} className="flex items-center justify-between gap-4 py-2.5">
+                          <dt className="text-sm font-semibold text-slate-700">{row.label}</dt>
+                          <dd className="text-right font-mono text-sm font-medium text-slate-900">{row.value}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  ) : (
+                    <p className="py-3 font-mono text-lg text-slate-700">&ndash;</p>
+                  )}
                 </div>
               </>
             )}
 
             {activeTab === "formulas" && (
               <>
-                <div className="rounded-md border border-slate-200">
-                  <div className="border-b border-slate-200 px-4 py-3 sm:px-5">
-                    <h2 className="text-sm font-bold uppercase tracking-wide text-slate-800">Formulas</h2>
-                  </div>
-                  <div className="p-4 sm:p-5">
-                    <p className="text-[13px] leading-5 text-slate-500">
-                      Watts is used as the internal base unit for all conversions.
-                    </p>
-                    <ul className="mt-4 space-y-1.5 font-mono text-[13px] leading-6 text-slate-800">
-                      <li>mW = Watts &times; 1000</li>
-                      <li>Watts = mW / 1000</li>
-                      <li>dBm = 10 &times; log10(Watts &times; 1000)</li>
-                      <li>
-                        Watts = 10<sup>((dBm &minus; 30) / 10)</sup>
-                      </li>
-                      <li>dBW = 10 &times; log10(Watts)</li>
-                      <li>
-                        Watts = 10<sup>(dBW / 10)</sup>
-                      </li>
-                      <li>dBW = dBm &minus; 30</li>
-                    </ul>
-                  </div>
+                <h2 className="text-[17px] font-bold text-slate-900">Formulas &amp; Theory</h2>
+                <p className="mt-0.5 text-[13px] text-slate-500">Watts is used as the internal base unit for every conversion</p>
+
+                <hr className="my-6 border-slate-200" />
+
+                <h2 className="text-xs font-bold uppercase tracking-wide text-slate-500">Conversion Formulas</h2>
+                <div className="mt-3 rounded-lg border border-slate-200 bg-slate-100 px-4 py-3">
+                  <ul className="space-y-1.5 font-mono text-[13px] leading-6 text-slate-800">
+                    <li>mW = Watts &times; 1000</li>
+                    <li>Watts = mW / 1000</li>
+                    <li>dBm = 10 &times; log10(Watts &times; 1000)</li>
+                    <li>
+                      Watts = 10<sup>((dBm &minus; 30) / 10)</sup>
+                    </li>
+                    <li>dBW = 10 &times; log10(Watts)</li>
+                    <li>
+                      Watts = 10<sup>(dBW / 10)</sup>
+                    </li>
+                    <li>dBW = dBm &minus; 30</li>
+                  </ul>
                 </div>
 
-                <div className="mt-6 rounded-md border border-slate-200">
-                  <div className="border-b border-slate-200 px-4 py-3 sm:px-5">
-                    <h2 className="text-sm font-bold uppercase tracking-wide text-slate-800">Rules of Thumb</h2>
-                  </div>
-                  <div className="p-4 sm:p-5">
-                    <div className="space-y-2 text-[13px] leading-6 text-slate-700">
-                      <p>
-                        <strong>+3 dB</strong> approximately doubles power; &minus;3 dB halves it.
-                      </p>
-                      <p>
-                        <strong>+10 dB</strong> multiplies power by 10; &minus;10 dB divides by 10.
-                      </p>
-                      <p>
-                        <strong>Negative dBm</strong> values are normal for power below 1 mW (e.g. &minus;30 dBm = 1 &micro;W).
-                      </p>
-                    </div>
+                <h2 className="mt-6 text-xs font-bold uppercase tracking-wide text-slate-500">Rules of Thumb</h2>
+                <div className="mt-3 rounded-lg border border-slate-200 bg-slate-100 px-4 py-3">
+                  <div className="space-y-2 text-[13px] leading-6 text-slate-700">
+                    <p>
+                      <strong>+3 dB</strong> approximately doubles power; &minus;3 dB halves it.
+                    </p>
+                    <p>
+                      <strong>+10 dB</strong> multiplies power by 10; &minus;10 dB divides by 10.
+                    </p>
+                    <p>
+                      <strong>Negative dBm</strong> values are normal for power below 1 mW (e.g. &minus;30 dBm = 1 &micro;W).
+                    </p>
                   </div>
                 </div>
               </>

@@ -1,1 +1,15 @@
 @import "tailwindcss";
+
+/* On phones the browser tints the status bar / overscroll area from the page
+   background, so keep it navy to match the header. Desktop uses the gray canvas. */
+html,
+body {
+  background-color: #0f2744;
+}
+
+@media (min-width: 640px) {
+  html,
+  body {
+    background-color: #eceff2;
+  }
+}
