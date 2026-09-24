@@ -8,7 +8,6 @@ The application provides three integrated workflows inside a single page:
 2. **Batch Import** — Convert thousands of rows from a CSV/XLSX file using a Go WASM engine (with a pure JavaScript fallback).
 3. **Formulas & Theory** — Reference formulas, RF rules of thumb, and the offset between dBm and dBW.
 
-Inspired by clean telecom engineering utility tools (e.g. [Cell-ID-Calculator](https://github.com/soemoehtun/Cell-ID-Calculator)).
 
 ---
 
