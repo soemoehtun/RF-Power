@@ -1,7 +1,8 @@
 import { useEffect, useId, useState } from "react";
+import BatchImport from "./components/BatchImport";
 
 type PowerUnit = "W" | "mW" | "dBm" | "dBW";
-type ActiveTab = "calculator" | "formulas";
+type ActiveTab = "calculator" | "batch" | "formulas";
 
 interface ConversionResult {
   watts: number;
@@ -130,7 +131,7 @@ export default function App() {
             </div>
 
             {/* Tabs — full-width navy bar with white underline on the active tab */}
-            <nav className="mt-5 flex border-b border-white/10">
+            <nav className="mt-5 flex flex-wrap border-b border-white/10">
               <button
                 type="button"
                 onClick={() => setActiveTab("calculator")}
@@ -141,6 +142,17 @@ export default function App() {
                 }
               >
                 Calculator
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("batch")}
+                className={
+                  activeTab === "batch"
+                    ? "border-b-2 border-white px-5 py-2.5 text-sm font-semibold text-white"
+                    : "border-b-2 border-transparent px-5 py-2.5 text-sm font-medium text-slate-300 transition hover:text-white"
+                }
+              >
+                Batch Import
               </button>
               <button
                 type="button"
@@ -254,6 +266,8 @@ export default function App() {
                 </div>
               </>
             )}
+
+            {activeTab === "batch" && <BatchImport />}
 
             {activeTab === "formulas" && (
               <>
